@@ -1,5 +1,16 @@
 ---
+const coins = ["BTC", "ETH", "SOL"];
 
+async function getPrice(coin) {
+	const res = await fetch(`https://api.coinbase.com/v2/prices/${coin}-USD/spot`);
+	const json = await res.json();
+	return json.data.amount;
+}
+
+const prices = {};
+for (const c of coins) {
+  prices[c] = await getPrice(c);
+}
 ---
 
 <html lang="en">
@@ -9,9 +20,14 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>API</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<h1>Crypto Prices</h1>
+		<ul>
+		{coins.map((c) => (
+			<li><strong>{c}:</strong> ${prices[c]}</li>
+		))}
+		</ul>
 	</body>
 </html>
