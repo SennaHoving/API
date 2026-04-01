@@ -1,16 +1,14 @@
 ---
-const coins = ["BTC", "ETH", "SOL"];
+const res = await fetch("https://wger.de/api/v2/exercise/");
+const exercisesData = await res.json();
+const exercises = exercisesData.results;
 
-async function getPrice(coin) {
-	const res = await fetch(`https://api.coinbase.com/v2/prices/${coin}-USD/spot`);
-	const json = await res.json();
-	return json.data.amount;
-}
+const fetchMuscles = await fetch("https://wger.de/api/v2/muscle/");
+const muscleData = await fetchMuscles.json(); 
+const muscles = muscleData.results;
 
-const prices = {};
-for (const c of coins) {
-  prices[c] = await getPrice(c);
-}
+// console.log(exercisesData); 
+console.log(exercises); 
 ---
 
 <html lang="en">
@@ -24,10 +22,12 @@ for (const c of coins) {
 	</head>
 	<body>
 		<h1>Crypto Prices</h1>
-		<ul>
-		{coins.map((c) => (
-			<li><strong>{c}:</strong> ${prices[c]}</li>
-		))}
-		</ul>
+		<p>Sup {exercises[1].muscles}</p>
+		<p>Dit nummer: {exercises[1].muscles} is deze muscle: {muscles[`${exercises[1].muscles}`].name}</p>
+		<!-- <ul>
+			{coins.map((c) => (
+				<li><strong>{c}:</strong> ${prices[c]}</li>
+			))}
+		</ul> -->
 	</body>
 </html>
