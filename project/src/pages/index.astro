@@ -1,33 +1,57 @@
----
-const res = await fetch("https://wger.de/api/v2/exercise/");
-const exercisesData = await res.json();
-const exercises = exercisesData.results;
+	---
+	const [ExerciseRes, MusclesRes, ExerciseTranslateRes] = await Promise.all([
+		fetch("https://wger.de/api/v2/exercise/?limit=100"), 
+		fetch("https://wger.de/api/v2/muscle/?limit=100"), 
+		fetch("https://wger.de/api/v2/exercise-translation/?limit=100")
+	]);
 
-const fetchMuscles = await fetch("https://wger.de/api/v2/muscle/");
-const muscleData = await fetchMuscles.json(); 
-const muscles = muscleData.results;
+	const exercisesData = await ExerciseRes.json();
+	const exercises = exercisesData.results;
 
-// console.log(exercisesData); 
-console.log(exercises); 
----
+	const muscleData = await MusclesRes.json(); 
+	const muscles = muscleData.results;
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>API</title>
-	</head>
-	<body>
-		<h1>Crypto Prices</h1>
-		<p>Sup {exercises[1].muscles}</p>
-		<p>Dit nummer: {exercises[1].muscles} is deze muscle: {muscles[`${exercises[1].muscles}`].name}</p>
-		<!-- <ul>
-			{coins.map((c) => (
-				<li><strong>{c}:</strong> ${prices[c]}</li>
-			))}
-		</ul> -->
-	</body>
-</html>
+	const exerciseTransData = await ExerciseTranslateRes.json(); 
+	const exerciseTranslate = exerciseTransData.results;
+	---
+
+	<html lang="en">
+		<head>
+			<meta charset="utf-8" />
+			<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+			<link rel="icon" href="/favicon.ico" />
+			<meta name="viewport" content="width=device-width" />
+			<meta name="generator" content={Astro.generator} />
+			<title>API</title>
+
+			<link rel="stylesheet" href="/src/styles/main.css">
+		</head>
+		<body>
+			<header>
+				<h1>Workout tracker</h1>
+			</header>
+			<div>
+				<!-- <p>Sup {exercises[1].muscles}</p>
+				<p>Dit nummer: {exercises[1].muscles} is deze muscle: {muscles.find(m => m.id === exercises[1].muscles[0]).name}</p> -->
+
+				<!-- <p>Exercise geselecteerd: {exercises[1].id}</p>
+				<p>Translated to: {exerci	seTrans.find(x => x.exercise === exercises[1].id)?.name}</p> -->
+				<!-- <p>Corresponing muscle: {muscles.find(x => x.id === exercises[1].id).name}</p> -->
+
+				<h2>Exercise Library</h2>
+				<div> 
+					<ul class="field">
+						{exerciseTranslate.map((exercise) => (
+							<li>{exercise.name}</li>
+						))}
+					</ul>
+				</div>
+			</div>
+
+			<div>
+				<ul class="field">Drop here to add exercise</ul>
+			</div>
+
+			<script src="../script/main.js"></script>
+		</body>
+	</html>
